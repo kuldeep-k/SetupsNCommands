@@ -1,0 +1,22 @@
+Redirects
+Static Routes
+Admin Rest API Token 
+
+Website Settings : select * from website_settings ;
+Assets Folders :  select * from assets where type = 'folder';
+Objects Folders :  select * from objects where o_type = 'folder';
+Redirects : select * from redirects
+
+Documents : 
+    select * from documents;
+    select * from documents_email;
+    select * from documents_page;
+    select * from properties
+
+
+
+
+
+
+
+

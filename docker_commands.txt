@@ -1,0 +1,33 @@
+DOCKER IMAGES 
+    sudo docker images
+
+CREATE DOCKER BUILD 
+    sudo docker build -t kuldeep/pmbuild .
+    
+RUN DOCKER BUILD
+    sudo docker run -it -d -p 8080:80 --name testcontainer kuldeep/pmbuild
+    
+STOP DOCKER CONTAINER 
+    sudo docker stop <containerid>
+
+REMOVE DOCKER CONTAINER 
+    sudo docker rm <containerid>
+   
+DOCKER CONTAINERS 
+    sudo docker ps    
+
+DOCKER CONTAINER SHELL    
+    sudo docker exec -it <containerid> /bin/bash    
+    
+DOCKER CONTAINER LOGS
+    sudo docker logs <containerid>    
+
+STOP/REMOME ALL DOCKER INSTANCES
+    sudo docker stop $(sudo docker ps -a -q)
+    sudo docker stop $(sudo docker ps -a -q)
+
+COMMIT docker container changes     
+    sudo docker commit <containerid> <container_name>
+    
+File copy to running container
+    sudo docker cp <SRC-FILE-PATH> <containerid>:<DEST-FILE-PATH>    

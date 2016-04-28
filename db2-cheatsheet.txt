@@ -1,0 +1,158 @@
+Commands :
+
+-- LIST DATABASES
+LIST DB DIRECTORY
+
+-- LIST ACTIVE DATABASE
+LIST ACTIVE DATABASES
+
+-- CONNECT DB
+CONNECT TO testdb
+
+-- TABLE LIST FOR CONNECTED DB 
+LIST TABLES
+
+
+-- Take Strcuture Dump 
+
+db2look -d MYDATABASE -a -e -o mydatabase.sql
+
+-- Do Data export
+db2move MYDATABASE EXPORT
+
+-- DO Data import
+db2move MYDATABASE IMPORT
+
+-- Check Table Structure
+DESCRIBE TABLE <table name>
+
+
+-- Check Foreign Keys for table 
+
+select CONSTNAME,FK_COLNAMES from SYSCAT.REFERENCES where TABNAME = '<TableName>'
+
+
+-- Primary Key Auto Increment Equ. 
+ id integer not null GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1),
+
+-- Create Table Ex.
+
+CREATE TABLE test (
+    id integer not null GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1),
+    name varchar(100),
+); 
+
+-- Change Column Type 
+ALTER TABLE <TableName> ALTER COLUMN <ColumnName> SET DATA TYPE CHAR(30)
+
+ALTER TABLE <TableName> ALTER COLUMN <ColumnName> SET NOT NULL
+
+ALTER TABLE <TableName> ALTER COLUMN <ColumnName> DROP NOT NULL
+
+
+--  Add Primary Key
+ALTER TABLE <TableName> ADD PRIMARY KEY (<id>);   
+
+
+--  Drop Primary Key
+ALTER TABLE <TableName> DROP PRIMARY KEY;   
+
+--  Add Foreign Key
+ALTER TABLE <TableName> ADD FOREIGN KEY (<column>) REFERENCES <table>(<column>);   
+ALTER TABLE location ADD FOREIGN KEY (location_manager_id) REFERENCES location_manager(id) on delete cascade; 
+
+-- DROP FOREIGN KEY
+ALTER TABLE <TableName> DROP FOREIGN KEY  <KeyId>
+
+--  Add Check constraint equalient to MySQL ENUM
+
+ ALTER TABLE load add constraint ck_status check (status in ('Active', 'Inactive'))
+
+-- DB2 not support frequent ALTER Statements and gave error "invalid state for the operation. Reason code="23".  SQLSTATE=55019
+" So REORG operation is necessary in between.
+
+REORG TABLE PICKERS
+
+
+-- DATE FIELDS AVAILABLE -> DATE, TIME, TIMESTAMP
+
+
+    db2 backup database missionp
+Import SQL File
+
+    $ db2 -tvf <FilePath>
+
+
+Backup DB :
+    backup database <DbName>
+
+Restore DB :
+    $ RESTORE DATABASE <ExportedDbName> FROM <FolderPath> taken at <Timestamp> into <ImportedDbName>
+    Ex. RESTORE DATABASE missionp FROM /tmp/ taken at 20140725122930 into missioni
+
+
+Import CSV  : 
+    $ import from "<CSVFilePath>" of del insert into <tableName> ( <columnList>)
+
+STEP DB2 Install
+
+    Downlaod Express edition & extract tar.
+
+    db2setup for GUI Install
+    db2_install for CLI Install
+
+    $ sudo apt-get install libpam0g:i386 libaio1 libnuma1 libnuma-dev
+    $ sudo ln -s /lib/i386-linux-gnu/libpam.so.0 /lib/libpam.so.0 
+    $ sudo ./db2_install
+
+
+
+Create DB2 Instance (Steps described at http://dcon.com.br/db2-cli-install/) :
+
+    $ groupadd db2grp1
+    $ groupadd dasadm1
+    $ groupadd db2fgrp1
+    $ useradd -g db2grp1 -G dasadm1 -m db2inst1
+    $ passwd db2inst1
+    $ useradd -g dasadm1 -G db2grp1 -m dasusr1
+    $ passwd dasusr1
+    $ useradd -g db2fgrp1 -m db2fenc1
+    $ passwd db2fenc1
+
+    $ cd /opt/ibm/db2/V10.5/instance
+    $ ./dascrt -u dasusr1
+    $ ./db2icrt -u db2fenc1 db2inst1
+    $ db2set DB2COMM=tcpip
+    $ db2 update dbm cfg using SVCENAME 50000
+
+    $ db2start
+    $ db2 create database missionp 
+
+
+If Needed 
+    $ db2set DB2AUTOSTART=YES
+
+# db2 shared library linked to zend If not found.
+    $ sudo ln -s /opt/ibm/db2/V10.5_01/lib64/libdb2.so.1 /usr/local/zend/lib/
+
+
+IBM DB2 Php Connector Install Tricks :
+
+During DB Visualizer DB2 Connection add a property `retrieveMessagesFromServerOnGetMessage` with value `true` for enable detailed message on sql commander.
+
+Install ibm_db2 package either by apt-get OR pecl.
+
+
+
+
+
+DB2 Catlog on Client Machine.
+
+$ db2 catalog tcpip node dbremt remote 192.168.9.227 server 50000
+
+$ db2 catalog database missioni as miremote at node dbremt
+
+$ db2 terminate
+
+$ db2 connect to miremote user db2inst1 
+

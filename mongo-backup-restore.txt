@@ -1,0 +1,12 @@
+insert into testnicbit1 select SClientIdentifier,PClientIdentifier,CClientIdentifier,concat(UniqueNo, '-4'), concat(SerialNo, '-4'), IsLocked, oo_id + 1680000, o_creationDate, o_modificationDate, o_published, ProductName, CategoryName from testnicbit ;
+
+mongify check database.config
+mongify translation database.config > translation.rb
+mongify process database.config translation.rb
+ 
+mongodump --db testnicbit
+ tar cvfz mongobackup.tar.gz dump/
+scp  -i ~/deepak.goyal.pk mongobackup.tar.gz deepak.goyal@ec2-52-3-246-14.compute-1.amazonaws.com:/data/backups/
+tar xfz mongobackup.tar.gz
+mongorestore dump
+
