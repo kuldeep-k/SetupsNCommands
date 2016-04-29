@@ -1,0 +1,39 @@
+See : http://www.michael-noll.com/blog/2013/03/13/running-a-multi-broker-apache-kafka-cluster-on-a-single-node/
+
+1. First create 3 brokers
+    cd /opt/kafka
+    cp config/server.properties config/broker1.properties 
+        broker.id=1
+        port=9092
+        log.dir=/tmp/kafka-logs-1
+
+    cp config/server.properties config/broker2.properties 
+        broker.id=2
+        port=9093
+        log.dir=/tmp/kafka-logs-2
+
+    cp config/server.properties config/broker3.properties 
+        broker.id=3
+        port=9094
+        log.dir=/tmp/kafka-logs-3
+        
+
+2. Create topics with 3 partitions & 3 replications
+        /opt/kafka/bin/kafka-topics.sh --zookeeper localhost:2181 --create --topic category --partitions 3 --replication-factor 3        
+        ...
+        
+3. In php code, Instead of using partition = 0, Use App1 = 0, App2 = 1, App3 = 2
+
+
+ In App 1 Producer Script :
+       $producer->setMessages($queue, 0, array($data));
+
+   In App 2 Producer Script :
+       $producer->setMessages($queue, 2, array($data));
+
+   In Consumer 1 Script :
+       $consumer->setPartition($queue, 0);
+
+   In Consumer 2 Script :
+       $consumer->setPartition($queue, 1);
+
